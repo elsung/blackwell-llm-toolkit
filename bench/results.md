@@ -124,12 +124,10 @@ The Nemotron Omni V3 multimodal handler (the headline of this whole repo) shippe
 
 ## Reproduction notes
 
-All bench scripts live in the **`runllm`** companion project (separate repo, in progress). The OpenAI-compatible endpoints are at `http://127.0.0.1:8001` (llama.cpp), `8000` (vLLM), or `9000` (TRT-LLM). Bench tools used:
+All bench scripts hit OpenAI-compatible endpoints (default `http://127.0.0.1:8001` for llama.cpp, `8000` for vLLM, `9000` for TRT-LLM):
 
 - **`rapid_bench.py`** — 41-prompt quality eval (intel/tools/cal/orch/creative). Uses `--url` flag to target any port.
 - **`bench_harness.py`** — sustained decode + TTFT + prefill + concurrency. Has a `--prompt-tokens N` long-ctx mode.
-
-Both available in the `runllm` repo (link will be added here once that's published).
 
 ---
 

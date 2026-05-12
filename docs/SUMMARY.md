@@ -66,7 +66,6 @@ Memory: peak ~75-85 GB without `--low_memory_mode`, under 50 GB with. **Confirme
 2. **Bench Nemotron Omni V3 on rc13** — image, then video, then audio (after the rc13 first-request-must-be-video workaround). End goal: replace the cloud VLM in Video_Analyzer's pipeline with this local fast inference.
 3. **Set up vLLM serving for Qwen 3.5/3.6** — these are vLLM-native; accept that path, don't fight TRT-LLM upstream. Test Qwen 3.6 27B BF16 first, then DIY-NVFP4 of it for faster serving.
 4. **Try Gemma 4 31B + 26B-A4B NVFP4 via TRT-LLM AutoDeploy** — NVIDIA-official NVFP4 checkpoints already exist (`nvidia/Gemma-4-31B-IT-NVFP4`, `nvidia/Gemma-4-26B-A4B-NVFP4`).
-5. **DIY-NVFP4 toolchain in `runllm`/`makellm`** — wrap modelopt `hf_ptq.py` as a first-class `makellm quantize-nvfp4` command so anyone can quantize without the recipe surgery.
 
 ## Anti-patterns to avoid (learnings)
 

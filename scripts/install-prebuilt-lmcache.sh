@@ -51,4 +51,4 @@ LD_LIBRARY_PATH="$LIBCUDART_SHIM" \
 
 echo ""
 echo "✓ LMCache sm_120 installed and importable."
-echo "  Now you can launch: runllm vllm-mjpansa-minimax-m2.7-reap172b-w4a16-longctx"
+echo "  Now you can serve a vLLM model with kv_offload + LMCacheConnectorV1."

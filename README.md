@@ -25,7 +25,7 @@ Everything in this repo is empirically validated on an **RTX PRO 6000 96 GB (sm_
 
 That's the **fastest and highest-quality model** measured on this box across all 7 production profiles benched in this repo — see [`bench/results.md`](bench/results.md) for the full table with Hugging Face links + quant + context-tested for each model.
 
-**Bench methodology**: `rapid_bench.py` (41-prompt quality eval — 10 intelligence + 10 tool-use + 13 calibration + 3 orchestration + 5 creative) and `bench_harness.py` (sustained decode + TTFT + prefill + concurrency, with a `--prompt-tokens N` long-ctx mode). Both ship with the companion `runllm` launcher (in progress, separate release).
+**Bench methodology**: `rapid_bench.py` (41-prompt quality eval — 10 intelligence + 10 tool-use + 13 calibration + 3 orchestration + 5 creative) and `bench_harness.py` (sustained decode + TTFT + prefill + concurrency, with a `--prompt-tokens N` long-ctx mode).
 
 ---
 
@@ -120,17 +120,6 @@ The three reports in [`docs/architecture/`](docs/architecture/) cover:
 
 ---
 
-## 🧰 Companion projects (separate repos, planned)
-
-This repo is a focused dump of recipes and bench data. For full management tooling around launching/saving profiles, swapping engines, and DIY-quantizing models, watch for:
-
-- **`runllm`** — bash launcher with TOML profile schema (one command per model + config)
-- **`makellm`** — quantization + REAP-pruning toolchain wrapper
-
-Both planned for separate releases. The profile TOMLs in `configs/profiles/` here are the schema `runllm` consumes.
-
----
-
 ## 🤝 Contributing
 
 Bench results on other Blackwell GPUs (RTX 5090, B200, etc.) are very welcome. Open a PR adding a row to `bench/results.md` with your hardware, configs, and method. Same for other model families that work / don't work on sm_120.
@@ -147,4 +136,4 @@ If you hit a different sm_120 issue, open an issue with the error trace — the 
 
 ## Author
 
-Built by [@elsung](https://github.com/elsung) (`elsung@gmail.com`) on a personal RTX PRO 6000 Blackwell workstation. If this saved you a day of debugging, ⭐ the repo or say hi on Reddit ([u/elsung](https://reddit.com/user/elsung)) or Discord.
+Built by [@elsung](https://github.com/elsung) (`elsung@gmail.com`) on a personal RTX PRO 6000 Blackwell workstation. If this saved you a day of debugging, ⭐ the repo or say hi on Reddit at [u/elsung](https://reddit.com/user/elsung).
