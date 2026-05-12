@@ -8,7 +8,7 @@ Everything in this repo is empirically validated on an **RTX PRO 6000 96 GB (sm_
 
 ## 🎯 Headline result
 
-**`nemotron3-nano-omni-30b-a3b-nvfp4-trtllm`** — NVIDIA's Nemotron-3-Nano-Omni V3 (30B/3B-active MoE, multimodal) on TensorRT-LLM v1.3.0rc13, NVFP4 modelopt, sm_120:
+**`nemotron3-nano-omni-30b-a3b-nvfp4-trtllm`** — [`nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4`](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4) (30B / 3B-active MoE, multimodal) on TensorRT-LLM v1.3.0rc13, NVFP4 modelopt format, sm_120, tested at 8k context:
 
 | Metric | Value |
 |---|---|
@@ -23,7 +23,9 @@ Everything in this repo is empirically validated on an **RTX PRO 6000 96 GB (sm_
 | VRAM @ ctx=8k | 88 GB |
 | **Modalities** | **image + video + audio + text** in one pass |
 
-That's the **fastest and highest-quality model** measured on this box across all 7 production profiles benched in this repo — see [`bench/results.md`](bench/results.md) for the full table.
+That's the **fastest and highest-quality model** measured on this box across all 7 production profiles benched in this repo — see [`bench/results.md`](bench/results.md) for the full table with Hugging Face links + quant + context-tested for each model.
+
+**Bench methodology**: `rapid_bench.py` (41-prompt quality eval — 10 intelligence + 10 tool-use + 13 calibration + 3 orchestration + 5 creative) and `bench_harness.py` (sustained decode + TTFT + prefill + concurrency, with a `--prompt-tokens N` long-ctx mode). Both ship with the companion `runllm` launcher (in progress, separate release).
 
 ---
 
