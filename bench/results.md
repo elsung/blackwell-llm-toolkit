@@ -27,6 +27,20 @@ All numbers are **single-card** (no tensor parallelism).
 
 Bold = best in column. Production rapid_bench results are aggregated from multiple runs; individual outlier runs noted in `docs/SUMMARY.md`.
 
+### Model sources (Hugging Face)
+
+The actual model checkpoints I downloaded and tested:
+
+| Profile (above) | Hugging Face repo + variant | Quant | Ctx tested |
+|---|---|---|---|
+| `nemotron3-nano-omni-30b-a3b-nvfp4-trtllm` | [`nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4`](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4) | NVFP4 (modelopt) | 8k |
+| `nemotron3-nano-30b-a3b-nvfp4-trtllm` | [`nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4`](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4) | NVFP4 (modelopt) | 8k |
+| `deepseek-v4-flash-iq2xxsxl-llamacpp-optane` | [`teamblobfish/DeepSeek-V4-Flash-GGUF`](https://huggingface.co/teamblobfish/DeepSeek-V4-Flash-GGUF) — `IQ2_XXS-XL/` directory (78.6 GB across 2 shards) | IQ2_XXS-XL (GGUF) | 65k |
+| `minimax-m2.7-reap172b-q3ks-llamacpp-optane` | [`exdysa/MiniMax-M2.7-REAP-172B-A10B-GGUF`](https://huggingface.co/exdysa/MiniMax-M2.7-REAP-172B-A10B-GGUF) — `Q3_K_S.gguf` (~70 GB single file) | Q3_K_S (GGUF) | 196k |
+| `minimax-m2.7-reap139b-q3km-llamacpp-optane` | [`dervig/m51Lab-MiniMax-M2.7-REAP-139B-A10B-GGUF`](https://huggingface.co/dervig/m51Lab-MiniMax-M2.7-REAP-139B-A10B-GGUF) — `Q3_K_M.gguf` (~63 GB) | Q3_K_M (GGUF) | 196k |
+| `minimax-m2.7-reap172b-w4a16-vllm-longctx` | [`MJPansa/MiniMax-M2.7-REAP-172B-A10B-AutoRound-W4A16`](https://huggingface.co/MJPansa/MiniMax-M2.7-REAP-172B-A10B-AutoRound-W4A16) + LMCache disk-tier offload to Optane SSD | W4A16 (AutoRound) | 154k |
+| `minimax-m2.7-reap172b-w4a16-vllm` | same as above (without LMCache) | W4A16 (AutoRound) | 64k |
+
 ---
 
 ## Profile selection rubric
