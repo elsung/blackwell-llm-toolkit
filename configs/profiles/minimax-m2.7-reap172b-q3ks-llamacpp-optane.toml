@@ -1,0 +1,43 @@
+engine = "llama.cpp"
+venv = "llama.cpp-cuda-blackwell"
+mode = "server"
+model = "MiniMax-M2.7-REAP-172B-A10B-Q3_K_S.gguf"
+
+[server]
+host = "0.0.0.0"
+port = 8001
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 196608
+kv_offload = false
+
+[reasoning]
+enabled = true
+effort = "medium"
+parser = "deepseek_r1"
+
+[generation]
+system_prompt = ""
+temperature = 0.7
+top_p = 0.95
+top_k = 40
+min_p = 0.05
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[extra]
+args = ["--cache-type-k", "q4_0", "--cache-type-v", "q4_0", "--chat-template-file", "${LLM_HOME}/configs/run/minimax-m2-nothink.jinja"]
+
+[meta]
+summary = "116 tok/s @ 196k, default long-ctx orchestrator (REAP-172B Q3_K_S)"
+tags = ["production", "long-context"]
+notes = "MiniMax-M2.7-REAP-172B-A10B Q3_K_S (Cerebras 25% expert pruning, REAP). 70 GB on disk fits entirely in 96 GB VRAM with ~22 GB free for KV at native 196k context — no CPU offload needed. Expected: 80-100 tok/s at long context (matches short-ctx orchestrator speed)."

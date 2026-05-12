@@ -1,0 +1,21 @@
+# Personal state / runtime artifacts
+.env
+*.local
+*.log
+
+# Editor / OS
+*.swp
+*.swo
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+
+# Anything that looks like a private path or local model cache
+models/
+venvs/
+engines/
+hf-cache/
+.cache/
+POSTING_DRAFTS.md

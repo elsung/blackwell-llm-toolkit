@@ -1,0 +1,54 @@
+engine = "llama.cpp"
+venv = "llama.cpp-cuda-blackwell"
+mode = "server"
+model = "DeepSeek-V4-Flash-IQ2_XXS-XL-00001-of-00002.gguf"
+
+[server]
+host = "0.0.0.0"
+port = 8001
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 65536
+kv_offload = false
+
+[reasoning]
+enabled = false
+effort = "medium"
+parser = "auto"
+
+[generation]
+system_prompt = ""
+temperature = 1.0
+top_p = 1.0
+top_k = 0
+min_p = 0.0
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[mtp]
+enabled = false
+n_max = 3
+ngl_draft = 999
+
+[env]
+ld_library_path_prepend = ""
+path_prepend = ""
+vars = []
+
+[extra]
+args = ["--jinja", "--no-repack"]
+
+[meta]
+summary = "MAX-QUALITY (9/10 intel, 10/10 tools, 13/13 cal). 31 tok/s decode, 65k ctx. Slow prefill (233 t/s)."
+llama_cpp_variant = "ds4"
+tags = ["production", "max-quality"]
+notes = "DS4-Flash 284B/13B MoE via cchuter/llama.cpp feat/v4-port-cuda fork (engines/llama.cpp-ds4 @ SHA 63ba22f). IQ2_XXS-XL (~78 GB on Optane) is the smallest 'fits without offload' XL-class quant — XL variant pins non-expert tensors at Q8_0 for better quality than vanilla IQ2. Phase 4 bench (2026-05-11): 31 tok/s decode, 189 ms TTFT, 9/10 intel + 10/10 tools + 13/13 cal + 3/3 orch — highest quality on this box, beats both exdysa (7/10 intel) and approaches mjpansa W4A16 (10/10 intel). Caveat: prefill is 233 tok/s (~11x slower than exdysa), so above ~16k context prompts become operationally painful. For long-ctx use exdysa (196k @ 116 t/s). Native 393k context is supported but not practical at this prefill rate. Flags: --jinja (chat template baked into GGUF), --no-repack (required when host RAM < 600 GiB), sampling temp=1.0 top_p=1.0 top_k=0 min_p=0.0 (deviating from DS4's recommended sampling hurts quality)."

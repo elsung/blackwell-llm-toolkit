@@ -1,0 +1,10 @@
+# Nemotron-3-Nano-Omni V3 config for sm_120 (Blackwell).
+# Per research findings:
+#   - moe_config.backend = CUTLASS (TRTLLM backend is B200-specific)
+#   - mamba_ssm_cache_dtype = float32 (mandatory for long sequences)
+#   - kv_cache_config.enable_block_reuse = false (Mamba hybrid requirement)
+kv_cache_config:
+  enable_block_reuse: false
+  mamba_ssm_cache_dtype: float32
+moe_config:
+  backend: CUTLASS

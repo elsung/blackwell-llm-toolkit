@@ -1,0 +1,47 @@
+engine = "vllm"
+venv = "vllm-stable-blackwell"
+mode = "server"
+model = "MJPansa__MiniMax-M2.7-REAP-172B-A10B-AutoRound-W4A16"
+
+[server]
+host = "0.0.0.0"
+port = 8000
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 65536
+kv_offload = false
+
+[reasoning]
+enabled = false
+effort = "medium"
+parser = "auto"
+
+[generation]
+system_prompt = ""
+temperature = 0.7
+top_p = 0.95
+top_k = 40
+min_p = 0.05
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[env]
+ld_library_path_prepend = "${LLM_HOME}/venvs/sglang-stable/lib/python3.12/site-packages/nvidia/cuda_runtime/lib"
+path_prepend = ""
+
+[extra]
+args = ["--quantization", "auto-round", "--kv-cache-dtype", "fp8_e4m3", "--cpu-offload-gb", "20", "--enable-auto-tool-choice", "--tool-call-parser", "minimax_m2", "--enable-prefix-caching", "--max-num-seqs", "1"]
+
+[meta]
+summary = "22-25 tok/s across full 64k ctx, MAX-QUALITY (10/10 intel, 12/13 cal), 4-bit W4A16"
+tags = ["production", "max-quality"]
+notes = "MJPansa M2.7-REAP-172B AutoRound W4A16 (4-bit weights, 16-bit activations). 85 GiB on GPU + 20 GiB CPU-offloaded weights — fits the full 64k context with ~10 GiB headroom. Long-ctx bench (2026-05-11): decode stays at 22-25 tok/s across 10k/41k/56k input prompts; prefill 1.4k → 3.9k tok/s rising with ctx (cpu-offload overhead amortizes over more tokens). Sidesteps the NVFP4 MoE SM120 bug via MARLIN INT4 kernel path. Best quality of all variants tested (10/10 intel, 12/13 calibration original bench). For >64k context use llama.cpp REAP profiles (196k native). Phase 3 plan: LMCache + Optane KV to push this to 131k+. Launchable via 'runllm vllm-mjpansa-minimax-m2.7-reap172b-w4a16' directly — the [env] block above handles the cu12 libcudart shim that nixl_ep needs on this cu13 venv. The bin/launch-mjpansa-w4a16.sh wrapper is a deprecation shim that forwards to runllm."

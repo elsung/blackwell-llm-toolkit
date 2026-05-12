@@ -1,0 +1,61 @@
+engine = "trtllm"
+venv = "trtllm-stable-cu13"
+mode = "server"
+model = "nvidia__NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4"
+
+[server]
+host = "0.0.0.0"
+port = 9000
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 8192
+kv_offload = false
+
+[reasoning]
+enabled = true
+effort = "medium"
+parser = "auto"
+
+[generation]
+system_prompt = ""
+temperature = 0.7
+top_p = 0.95
+top_k = 40
+min_p = 0.05
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[mtp]
+enabled = false
+n_max = 3
+ngl_draft = 999
+
+[trtllm]
+backend = "pytorch"
+max_batch_size = 4
+max_seq_len = 8192
+max_num_tokens = ""
+extra_llm_api_options = "${LLM_HOME}/configs/trtllm/nemotron-h-base.yaml"
+
+[env]
+ld_library_path_prepend = ""
+path_prepend = ""
+vars = []
+
+[extra]
+args = []
+
+[meta]
+summary = "FASTEST + best all-around — 249 t/s decode, 24094 t/s prefill, 29ms TTFT, 9/10/10/13/3"
+llama_cpp_variant = "production"
+tags = ["production", "max-quality"]
+notes = "NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 (30B MoE / 3B active, NVFP4 modelopt-format quant) on TensorRT-LLM v1.2.1 pytorch backend. Phase 5 bench (2026-05-11): 249 tok/s decode (FASTEST on this box), 29 ms TTFT (TIES FOR FASTEST), 24094 tok/s prefill (10x faster than llama.cpp REAP profiles). Concurrency N=4 aggregates 682 tok/s. Quality: 9/10 intel, 10/10 tools, 13/13 cal, 3/3 orch — all-around best. Tools needed rapid_bench's XML fallback parser (commit 24b5d06+follow-up) because TRT-LLM v1.2.1 has no Nemotron-3 tool_parser; the model emits perfect tool calls in <tool_call><function=name><parameter=k>v</parameter></function></tool_call> XML which rapid_bench now parses. Requires the kv_cache_config.enable_block_reuse=false YAML override (NemotronH is a Mamba hybrid architecture). Build/install repro: bin/install-prebuilt-lmcache.sh-style setup pending for TRT-LLM (currently manual: uv pip install tensorrt_llm + apt openmpi)."

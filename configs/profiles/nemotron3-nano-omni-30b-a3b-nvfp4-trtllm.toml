@@ -1,0 +1,61 @@
+engine = "trtllm"
+venv = "trtllm-rc14-cu13"
+mode = "server"
+model = "nvidia__Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4"
+
+[server]
+host = "0.0.0.0"
+port = 9000
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 8192
+kv_offload = false
+
+[reasoning]
+enabled = true
+effort = "medium"
+parser = "auto"
+
+[generation]
+system_prompt = ""
+temperature = 0.7
+top_p = 0.95
+top_k = 40
+min_p = 0.05
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[mtp]
+enabled = false
+n_max = 3
+ngl_draft = 999
+
+[trtllm]
+backend = "pytorch"
+max_batch_size = 4
+max_seq_len = 8192
+max_num_tokens = ""
+extra_llm_api_options = "${LLM_HOME}/configs/trtllm/nemotron-omni-v3-sm120.yaml"
+
+[env]
+ld_library_path_prepend = ""
+path_prepend = ""
+vars = []
+
+[extra]
+args = []
+
+[meta]
+summary = "BEST MODEL on this box: 270 t/s decode + 62k t/s prefill + 10/10 intel + MULTIMODAL"
+llama_cpp_variant = "production"
+tags = ["production", "max-quality", "multimodal"]
+notes = "nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4 (30B MoE / 3B active, NVFP4 modelopt, multimodal — RADIO C-RADIOv4-H vision with video tubelet path + Parakeet-TDT audio encoder). Loads natively in TRT-LLM v1.3.0rc13+ (NOT v1.2.1 which only has the V2 NVL handler). Bench (2026-05-11): decode 269.81 t/s (FASTEST on this box, beats Nano text 249), TTFT 24 ms (ties exdysa for fastest), prefill 62407 t/s @ 5426 tok (2.6x Nano text, 25x llama.cpp REAP). Concurrency N=4 agg 705 t/s. Quality: 10/10 intel (perfect, beats Nano text's 9/10), 8/10 tools (slightly worse than Nano's 10/10 — reasoning chains leak via XML fallback parser), 12/13 cal, 3/3 orch. Image smoke verified (Lorem-Picsum swim photo correctly described). Architecture: 52-layer hybrid (23 Mamba-2 SSM + 23 MoE + 6 GQA per llm_config.hybrid_override_pattern); MoE is DeepSeek-V3-style grouped (128 experts, top-6 of top-1-of-8-groups, routed_scaling_factor=2.5). sm_120 launch knobs (extra_llm_api_options ${LLM_HOME}/configs/trtllm/nemotron-omni-v3-sm120.yaml): kv_cache_config.enable_block_reuse=false + mamba_ssm_cache_dtype=float32 + moe_config.backend=CUTLASS. Required librosa pip install for the Parakeet audio path. Lives in venv trtllm-rc14-cu13 (rc13 pinned; rc14 venv name is forward-compat). The cu13 venv with v1.2.1 stays for text-only Nano profile."

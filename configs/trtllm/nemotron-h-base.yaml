@@ -1,0 +1,4 @@
+# Disable KV block reuse — required for Mamba hybrid models (NemotronH).
+# Triggered AssertionError: "mamba hybrid cache requires block reuse to be disabled in KV cache config"
+kv_cache_config:
+  enable_block_reuse: false

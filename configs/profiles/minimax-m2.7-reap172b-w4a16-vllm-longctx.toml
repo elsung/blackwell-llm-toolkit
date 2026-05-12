@@ -1,0 +1,53 @@
+engine = "vllm"
+venv = "vllm-stable-blackwell"
+mode = "server"
+model = "MJPansa__MiniMax-M2.7-REAP-172B-A10B-AutoRound-W4A16"
+
+[server]
+host = "0.0.0.0"
+port = 8000
+
+[flags]
+gpu_memory_utilization = 0.92
+max_model_len = 163840
+kv_offload = true
+
+[reasoning]
+enabled = false
+effort = "medium"
+parser = "auto"
+
+[generation]
+system_prompt = ""
+temperature = 0.7
+top_p = 0.95
+top_k = 40
+min_p = 0.05
+repetition_penalty = 1.0
+max_tokens = 512
+seed = -1
+truncation_strategy = "sliding"
+keep_n = 256
+
+[benchmark]
+type = "chat"
+prompt = "Why is the sky blue?"
+num_iterations = 5
+
+[mtp]
+enabled = false
+n_max = 3
+ngl_draft = 999
+
+[env]
+ld_library_path_prepend = "${LLM_HOME}/venvs/sglang-stable/lib/python3.12/site-packages/nvidia/cuda_runtime/lib"
+path_prepend = ""
+vars = ["LMCACHE_CONFIG_FILE=${LLM_FAST_TIER}/lmcache.yaml"]
+
+[extra]
+args = ["--quantization", "auto-round", "--kv-cache-dtype", "fp8_e4m3", "--cpu-offload-gb", "20", "--enable-auto-tool-choice", "--tool-call-parser", "minimax_m2", "--enable-prefix-caching", "--max-num-seqs", "1"]
+
+[meta]
+summary = "20-22 tok/s decode across 64k → 154k ctx via LMCache + Optane; W4A16 quality preserved"
+tags = ["production", "max-quality", "long-context"]
+notes = "Long-context variant of vllm-mjpansa-minimax-m2.7-reap172b-w4a16. max_model_len=163840 (160k, vLLM's KV-cap-derived ceiling on this 96 GB box) with kv_offload=true (emits --kv-transfer-config LMCacheConnectorV1). LMCache offloads KV to Optane (60 GiB disk + 8 GiB CPU tier) via lmcache.yaml. Bench history: 131k-cap profile (2026-05-11 morning): 24.21 / 22.22 / 20.16 tok/s @ 64k/100k/116k. 160k-cap profile (this commit): 21.60 / 20.28 tok/s @ 116k/154k. The vLLM KV-fraction estimator reports ~171k as the math ceiling at gpu_memory_utilization=0.92; bumping above 163840 (160k power-of-2-ish) trips the OOM check at load. Requires source-built LMCache 0.4.4 sm_120 wheel (bin/build-lmcache-sm120.sh or install-prebuilt-lmcache.sh). cu12 libcudart shim inherited from parent profile."
